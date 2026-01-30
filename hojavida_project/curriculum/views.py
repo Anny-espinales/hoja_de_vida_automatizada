@@ -108,16 +108,58 @@ def obtener_datos_para_pdf(perfil):
 def generar_pdf(request):
     """
     OPCIÓN 1: HTML para imprimir (ACTUAL)
-    Genera una página HTML optimizada para que el usuario imprima a PDF
-    Ventaja: No requiere instalar nada
-    Desventaja: El usuario debe hacer clic en "Imprimir" manualmente
+    Genera una página HTML optimizada para que el usuario imprima a PDF.
+    Permite recibir parámetros en la petición (GET) para indicar qué
+    secciones incluir sin modificar las preferencias guardadas en el modelo.
+    Parámetros esperados (valores: '1' = incluir, '0' = excluir):
+      - incluir_experiencia
+      - incluir_cursos
+      - incluir_reconocimientos
+      - incluir_productos_academicos
+      - incluir_productos_laborales
+      - incluir_venta_garage
     """
     perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
-    
+
     if not perfil:
         return redirect('hoja_de_vida')
-    
-    context = obtener_datos_para_pdf(perfil)
+
+    params = request.GET
+    # Si no hay parámetros 'incluir_' => usar flags guardados
+    if not any(k.startswith('incluir_') for k in params.keys()):
+        context = obtener_datos_para_pdf(perfil)
+        return render(request, 'curriculum/pdf_template.html', context)
+
+    context = {
+        'perfil': perfil,
+        'hoy': date.today(),
+        'es_pdf': True,
+    }
+
+    def param_bool(name, default=False):
+        val = params.get(name)
+        if val is None:
+            return default
+        return val in ['1', 'true', 'True', 'on']
+
+    if param_bool('incluir_experiencia'):
+        context['experiencias'] = perfil.experiencias.filter(activarparaqueseveaenfront=True).order_by('-fechainiciogestion')
+
+    if param_bool('incluir_cursos'):
+        context['cursos'] = perfil.cursos.filter(activarparaqueseveaenfront=True).order_by('-fechainicio')
+
+    if param_bool('incluir_reconocimientos'):
+        context['reconocimientos'] = perfil.reconocimientos.filter(activarparaqueseveaenfront=True).order_by('-fechareconocimiento')
+
+    if param_bool('incluir_productos_academicos'):
+        context['productos_academicos'] = perfil.productos_academicos.filter(activarparaqueseveaenfront=True).order_by('-fecha_registro')
+
+    if param_bool('incluir_productos_laborales'):
+        context['productos_laborales'] = perfil.productos_laborales.filter(activarparaqueseveaenfront=True).order_by('-fechaproducto')
+
+    if param_bool('incluir_venta_garage'):
+        context['ventas_garage'] = perfil.ventas_garage.filter(activarparaqueseveaenfront=True).order_by('-fecha_publicacion')
+
     return render(request, 'curriculum/pdf_template.html', context)
 
 
@@ -301,3 +343,5 @@ def api_datos_personales(request):
     }
     
     return JsonResponse(data)
+
+

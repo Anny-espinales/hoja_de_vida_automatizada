@@ -56,8 +56,6 @@
             border-radius: 10px;
             padding: 25px;
             height: fit-content;
-            position: sticky;
-            top: 20px;
         }
         
         .profile-img {
@@ -136,6 +134,34 @@
             height: 100%;
             background: var(--secondary-color);
             border-radius: 3px;
+        }
+
+        /* Tarjetas pequeñas estilo "Resumen rápido" */
+        .small-card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .small-card {
+            background: rgba(255,255,255,0.95);
+            color: #0b2740;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            box-shadow: 0 6px 18px rgba(11,39,64,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .small-card .small-label {
+            font-weight: 600;
+            color: #27435a;
+            font-size: 0.85rem;
         }
         
         /* CONTENIDO PRINCIPAL */
@@ -578,56 +604,45 @@
                 {% endif %}
             </div>
             
-            <!-- Habilidades (si existen) -->
+            <!-- Resumen rápido (tarjetería) -->
             <h3 class="section-title-sidebar">
-                <i class="fas fa-star"></i>Habilidades
+                <i class="fas fa-list"></i>Resumen rápido
             </h3>
-            
-            <ul class="skills-list">
-                {% if perfil.habilidades %}
-                {% for skill in perfil.habilidades.splitlines %}
-                <li class="skill-item">
-                    <div class="skill-name">{{ skill }}</div>
-                    <div class="skill-bar">
-                        <div class="skill-level" style="width: {% cycle '90%' '85%' '80%' '75%' %}"></div>
+            {% with cursos_count=cursos|default:''|length experiencias_count=experiencias|default:''|length reconocimientos_count=reconocimientos|default:''|length prod_acad_count=productos_academicos|default:''|length prod_lab_count=productos_laborales|default:''|length ventas_count=ventas_garage|default:''|length %}
+            <div style="background: rgba(255,255,255,0.95); color:#0b2740; padding:12px; border-radius:12px;">
+                <div class="small-card-grid" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="small-card" style="flex-direction:column; align-items:flex-start;">
+                        <div style="font-size:1.4rem; font-weight:800; color:var(--primary-color);">{{ cursos_count|default:0 }}</div>
+                        <div style="font-size:0.85rem; font-weight:600; color:#27435a;">Cursos</div>
                     </div>
-                </li>
-                {% endfor %}
-                {% else %}
-                <li class="skill-item">
-                    <div class="skill-name">Comunicación</div>
-                    <div class="skill-bar">
-                        <div class="skill-level" style="width: 85%"></div>
+                    <div class="small-card" style="flex-direction:column; align-items:flex-start;">
+                        <div style="font-size:1.4rem; font-weight:800; color:var(--primary-color);">{{ experiencias_count|default:0 }}</div>
+                        <div style="font-size:0.85rem; font-weight:600; color:#27435a;">Experiencias</div>
                     </div>
-                </li>
-                <li class="skill-item">
-                    <div class="skill-name">Trabajo en equipo</div>
-                    <div class="skill-bar">
-                        <div class="skill-level" style="width: 90%"></div>
+                    <div class="small-card" style="flex-direction:column; align-items:flex-start;">
+                        <div style="font-size:1.4rem; font-weight:800; color:var(--primary-color);">{{ reconocimientos_count|default:0 }}</div>
+                        <div style="font-size:0.85rem; font-weight:600; color:#27435a;">Reconoc.</div>
                     </div>
-                </li>
-                <li class="skill-item">
-                    <div class="skill-name">Resolución de problemas</div>
-                    <div class="skill-bar">
-                        <div class="skill-level" style="width: 80%"></div>
+                    <div class="small-card" style="flex-direction:column; align-items:flex-start;">
+                        <div style="font-size:1.4rem; font-weight:800; color:var(--primary-color);">{{ prod_acad_count|default:0 }}</div>
+                        <div style="font-size:0.85rem; font-weight:600; color:#27435a;">Prod. Acad.</div>
                     </div>
-                </li>
-                {% endif %}
-            </ul>
-            
-            <!-- Idiomas -->
-            <h3 class="section-title-sidebar">
-                <i class="fas fa-language"></i>Idiomas
-            </h3>
-            
-            <ul class="skills-list">
-                <li class="skill-item">
-                    <div class="skill-name">Español (Nativo)</div>
-                    <div class="skill-bar">
-                        <div class="skill-level" style="width: 100%"></div>
+                    <div class="small-card" style="flex-direction:column; align-items:flex-start;">
+                        <div style="font-size:1.4rem; font-weight:800; color:var(--primary-color);">{{ prod_lab_count|default:0 }}</div>
+                        <div style="font-size:0.85rem; font-weight:600; color:#27435a;">Prod. Lab.</div>
                     </div>
-                </li>
-            </ul>
+                    <div class="small-card" style="flex-direction:column; align-items:flex-start;">
+                        <div style="font-size:1.4rem; font-weight:800; color:var(--primary-color);">{{ ventas_count|default:0 }}</div>
+                        <div style="font-size:0.85rem; font-weight:600; color:#27435a;">Venta</div>
+                    </div>
+                </div>
+
+                <hr style="margin:12px 0; border-color: rgba(11,39,64,0.06);">
+
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+                </div>
+            </div>
+            {% endwith %}
         </aside>
         
         <!-- CONTENIDO PRINCIPAL -->
@@ -734,23 +749,34 @@
                     <div class="section-icon">
                         <i class="fas fa-graduation-cap"></i>
                     </div>
-                    <h2 class="section-title">Formación Académica</h2>
+                    <h2 class="section-title">Curso Realizados</h2>
                 </div>
                 
-                <div class="timeline-compact">
+                <div class="product-grid">
                     {% for curso in cursos %}
-                    <div class="timeline-item-compact">
-                        <span class="timeline-date">
-                            {{ curso.fechainicio|date:"M Y" }} - {{ curso.fechafin|date:"M Y" }}
-                            {% if curso.totalhoras %}
-                                | {{ curso.totalhoras }}h
-                            {% endif %}
-                        </span>
-                        <h3 class="timeline-title">{{ curso.nombrecurso }}</h3>
-                        <p class="timeline-subtitle">{{ curso.entidadpatrocinadora }}</p>
-                        {% if curso.descripcioncurso %}
-                        <p>{{ curso.descripcioncurso|truncatewords:25 }}</p>
+                    <div class="product-card">
+                        {% if curso.rutacertificado %}
+                        <img src="{{ curso.rutacertificado.url }}" 
+                             alt="{{ curso.nombrecurso }}" 
+                             class="product-image">
+                        {% else %}
+                        <div class="product-image" style="background: #eee; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-certificate" style="color: #aaa; font-size: 2rem;"></i>
+                        </div>
                         {% endif %}
+                        <div class="product-body">
+                            <h5>{{ curso.nombrecurso }}</h5>
+                            <p class="small" style="color: #666; margin-bottom: 5px;">
+                                {{ curso.entidadpatrocinadora }}
+                            </p>
+                            <span class="status-badge status-good">
+                                {{ curso.fechainicio|date:"M Y" }} - {{ curso.fechafin|date:"M Y" }}
+                                {% if curso.totalhoras %} | {{ curso.totalhoras }}h{% endif %}
+                            </span>
+                            {% if curso.descripcioncurso %}
+                            <p class="small" style="margin-top: 8px;">{{ curso.descripcioncurso|truncatewords:15 }}</p>
+                            {% endif %}
+                        </div>
                     </div>
                     {% endfor %}
                 </div>
@@ -877,18 +903,74 @@
         </main>
     </div>
     
-    <!-- Botones flotantes -->
-    <div class="floating-actions">
-        <button class="floating-btn btn-print" onclick="window.print()" title="Imprimir">
-            <i class="fas fa-print"></i>
-        </button>
-        <a href="{% url 'generar_pdf' %}" class="floating-btn btn-pdf" title="Descargar PDF" target="_blank">
-            <i class="fas fa-file-pdf"></i>
-        </a>
-        <a href="/admin/" class="floating-btn btn-admin" title="Panel de Administración">
-            <i class="fas fa-cog"></i>
-        </a>
-    </div>
+        <!-- Botones flotantes -->
+        <div class="floating-actions">
+                <button class="floating-btn btn-print" onclick="window.print()" title="Imprimir">
+                        <i class="fas fa-print"></i>
+                </button>
+                <button class="floating-btn btn-pdf" title="Descargar PDF" data-bs-toggle="modal" data-bs-target="#pdfOptionsModal">
+                        <i class="fas fa-file-pdf"></i>
+                </button>
+                <a href="/admin/" class="floating-btn btn-admin" title="Panel de Administración">
+                        <i class="fas fa-cog"></i>
+                </a>
+        </div>
+
+        <!-- Modal: Seleccionar secciones para PDF -->
+        <div class="modal fade" id="pdfOptionsModal" tabindex="-1" aria-labelledby="pdfOptionsLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-primary" id="pdfOptionsLabel">Seleccionar Secciones para PDF</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <form id="pdfOptionsForm" method="get" action="{% url 'generar_pdf' %}" target="_blank">
+                        <div class="modal-body">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" value="1" id="opt_experiencia" name="incluir_experiencia" {% if perfil.imprimir_experiencia %}checked{% endif %}>
+                                <input type="hidden" name="incluir_experiencia" value="0">
+                                <label class="form-check-label fw-bold" for="opt_experiencia">Incluir Experiencia</label>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" value="1" id="opt_cursos" name="incluir_cursos" {% if perfil.imprimir_cursos %}checked{% endif %}>
+                                <input type="hidden" name="incluir_cursos" value="0">
+                                <label class="form-check-label fw-bold" for="opt_cursos">Incluir Cursos/Títulos</label>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" value="1" id="opt_reconocimientos" name="incluir_reconocimientos" {% if perfil.imprimir_reconocimientos %}checked{% endif %}>
+                                <input type="hidden" name="incluir_reconocimientos" value="0">
+                                <label class="form-check-label fw-bold" for="opt_reconocimientos">Incluir Logros</label>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" value="1" id="opt_prod_acad" name="incluir_productos_academicos" {% if perfil.imprimir_productos_academicos %}checked{% endif %}>
+                                <input type="hidden" name="incluir_productos_academicos" value="0">
+                                <label class="form-check-label fw-bold" for="opt_prod_acad">Incluir Prod. Académicos</label>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" value="1" id="opt_prod_lab" name="incluir_productos_laborales" {% if perfil.imprimir_productos_laborales %}checked{% endif %}>
+                                <input type="hidden" name="incluir_productos_laborales" value="0">
+                                <label class="form-check-label fw-bold" for="opt_prod_lab">Incluir Proyectos</label>
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" value="1" id="opt_venta" name="incluir_venta_garage" {% if perfil.imprimir_venta_garage %}checked{% endif %}>
+                                <label class="form-check-label fw-bold" for="opt_venta">Incluir Venta Garage</label>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Generar PDF</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     
     {% else %}
     <!-- ========== PÁGINA DE BIENVENIDA ========== -->
@@ -961,6 +1043,30 @@
             }
             
             window.addEventListener('resize', adjustFloatingButtons);
+                // Interceptar envío del formulario del modal para construir URL controlada
+                const pdfForm = document.getElementById('pdfOptionsForm');
+                if (pdfForm) {
+                    pdfForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const action = pdfForm.getAttribute('action');
+                        const checks = pdfForm.querySelectorAll('input[type=checkbox]');
+                        const params = new URLSearchParams();
+                        checks.forEach(chk => {
+                            const name = chk.name;
+                            const val = chk.checked ? '1' : '0';
+                            params.set(name, val);
+                        });
+
+                        const url = action + '?' + params.toString();
+                        // Abrir en nueva pestaña y cerrar modal
+                        window.open(url, '_blank');
+                        const modalEl = document.getElementById('pdfOptionsModal');
+                        try {
+                            const bsModal = bootstrap.Modal.getInstance(modalEl);
+                            if (bsModal) bsModal.hide();
+                        } catch (err) {}
+                    });
+                }
             adjustFloatingButtons();
         });
     </script>
